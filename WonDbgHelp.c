@@ -8,26 +8,72 @@ extern "C" {
 
 /**************************************************************************/
 
-IMAGE_NT_HEADERS *NTAPI WonImageNtHeader(void *base)
+NTSTATUS NTAPI WonImageNtHeaderEx(
+    ULONG flags,
+    void *base,
+    ULONGLONG size,
+    IMAGE_NT_HEADERS **out_nt)
 {
     IMAGE_DOS_HEADER *dos;
     IMAGE_NT_HEADERS *nt;
-    DWORD nt_offset = 0;
+    DWORD nt_offset = 0, file_offset;
+    BOOLEAN needs_check;
 
-    if (!base || base == (void *)-1)
-        return NULL;
+    if (!out_nt)
+    {
+        return STATUS_INVALID_PARAMETER;
+    }
+
+    *out_nt = NULL;
+
+    if ((flags & ~RTL_IMAGE_NT_HEADER_EX_FLAG_NO_RANGE_CHECK) ||
+        !base || base == (void *)-1)
+    {
+        return STATUS_INVALID_PARAMETER;
+    }
+
+    needs_check = !(flags & RTL_IMAGE_NT_HEADER_EX_FLAG_NO_RANGE_CHECK);
+    if (needs_check)
+    {
+        /* Make sure the image size is at least big enough for the DOS header */
+        if (size < sizeof(IMAGE_DOS_HEADER))
+        {
+            return STATUS_INVALID_IMAGE_FORMAT;
+        }
+    }
 
     dos = (IMAGE_DOS_HEADER *)base;
     if (dos->e_magic == IMAGE_DOS_SIGNATURE)
         nt_offset = dos->e_lfanew;
 
     if (nt_offset >= 256 * 1024 * 1024)
-        return NULL;
+        return STATUS_INVALID_IMAGE_FORMAT;
+
+    if (needs_check)
+    {
+        file_offset = RTL_SIZEOF_THROUGH_FIELD(IMAGE_NT_HEADERS, FileHeader);
+        if (nt_offset + file_offset >= size)
+        {
+            return STATUS_INVALID_IMAGE_FORMAT;
+        }
+    }
 
     nt = (IMAGE_NT_HEADERS *)((ULONG_PTR)base + nt_offset);
     if (nt->Signature != IMAGE_NT_SIGNATURE)
-        return NULL;
+        return STATUS_INVALID_IMAGE_FORMAT;
 
+    *out_nt = nt;
+    return STATUS_SUCCESS;
+}
+
+IMAGE_NT_HEADERS *NTAPI WonImageNtHeader(void *base)
+{
+    IMAGE_NT_HEADERS *nt;
+
+    WonImageNtHeaderEx(RTL_IMAGE_NT_HEADER_EX_FLAG_NO_RANGE_CHECK,
+                       base,
+                       0,
+                       &nt);
     return nt;
 }
 
