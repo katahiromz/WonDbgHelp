@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     6   /* Version 6 */
+#define WONNT_H     7   /* Version 7 */
 
 #if defined(_WIN32) && !defined(WON_WITHOUT_WIN)
     #ifndef _INC_WINDOWS
@@ -225,7 +225,7 @@ typedef struct {
 
 #define IMAGE_SIZEOF_SHORT_NAME 8
 
-typedef struct _IMAGE_SECTION_HEADER {
+typedef struct {
     BYTE Name[IMAGE_SIZEOF_SHORT_NAME];
     union {
         DWORD PhysicalAddress;
