@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONDBGHELP_H_
-#define WONDBGHELP_H_     2   /* Version 2 */
+#define WONDBGHELP_H_     3   /* Version 3 */
 
 #include "wonnt.h"
 
@@ -46,6 +46,16 @@ WonImageDirectoryEntryToDataEx(
 
 #ifdef __cplusplus
 } // extern "C"
+#endif
+
+/**************************************************************************/
+
+#ifdef _WONVER
+    #define ImageNtHeader WonImageNtHeader
+    #define ImageRvaToSection WonImageRvaToSection
+    #define ImageRvaToVa WonImageRvaToVa
+    #define ImageDirectoryEntryToData WonImageDirectoryEntryToData
+    #define ImageDirectoryEntryToDataEx WonImageDirectoryEntryToDataEx
 #endif
 
 #endif  /* ndef WONDBGHELP_H_ */
