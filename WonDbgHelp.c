@@ -8,7 +8,20 @@ extern "C" {
 
 /**************************************************************************/
 
-NTSTATUS NTAPI WonImageNtHeaderEx(
+typedef LONG NTSTATUS;
+
+#ifndef STATUS_SUCCESS
+    #define STATUS_SUCCESS ((NTSTATUS)0x00000000)
+#endif
+#ifndef STATUS_INVALID_PARAMETER
+    #define STATUS_INVALID_PARAMETER ((NTSTATUS)0xC000000D)
+#endif
+#ifndef STATUS_INVALID_IMAGE_FORMAT
+    #define STATUS_INVALID_IMAGE_FORMAT ((NTSTATUS)0xC000007B)
+#endif
+
+static NTSTATUS NTAPI
+WonImageNtHeaderEx(
     ULONG flags,
     void *base,
     ULONGLONG size,
@@ -65,6 +78,8 @@ NTSTATUS NTAPI WonImageNtHeaderEx(
     *out_nt = nt;
     return STATUS_SUCCESS;
 }
+
+/**************************************************************************/
 
 IMAGE_NT_HEADERS *NTAPI WonImageNtHeader(void *base)
 {
