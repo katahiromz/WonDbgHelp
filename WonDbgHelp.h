@@ -1,4 +1,5 @@
 /* WonDbgHelp.h --- Wonders ImageDirectoryEntryToData */
+/* Copyright (C) 2017 Katayama Hirofumi MZ. License: GPLv3 */
 /**************************************************************************/
 
 #ifndef WONDBGHELP_H_
