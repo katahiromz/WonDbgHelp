@@ -5,7 +5,7 @@
 #ifndef WONDBGHELP_H_
 #define WONDBGHELP_H_     5   /* Version 5 */
 
-#if !defined(_WIN32) || defined(_WONVER)
+#if !defined(_WIN32) || (defined(_WONVER) && _WONVER == 0)
     #include "wonnt.h"
 #else
     #ifndef _INC_WINDOWS
@@ -57,7 +57,7 @@ WonImageDirectoryEntryToDataEx(
 
 /**************************************************************************/
 
-#if !defined(_WIN32) || defined(_WONVER)
+#if !defined(_WIN32) || (defined(_WONVER) && _WONVER == 0)
     #define ImageNtHeader WonImageNtHeader
     #define ImageRvaToSection WonImageRvaToSection
     #define ImageRvaToVa WonImageRvaToVa
